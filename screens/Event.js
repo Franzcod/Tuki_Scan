@@ -8,15 +8,15 @@ const Event = ( { route, navigation }) => {
 
     const { llave } = route.params;
 
-    console.log('llave => ',llave)
+    // console.log('llave => ',llave)
 
     const [event, setEvent] = useState([])
 
 
     const loadEvent = async (id) => {
-        console.log('id in fuction => ', id)
+        // console.log('id in fuction => ', id)
         const data = await getEvent(id)
-        console.log(data)
+        // console.log(data)
         setEvent(data)
         // console.log(data.error)
     }
@@ -55,8 +55,8 @@ const Event = ( { route, navigation }) => {
                         color= 'rgb(255,204,0)'
                         style={styles.boton}
                         onPress={() =>{
-                            console.log('scan press')
-                            navigation.navigate('ScannScreen')
+                            // console.log('scan press')
+                            navigation.navigate('ScannScreen', {eventID : llave})
                         }}
                         // onPress={() => navigation.goBack()}
                     /> 

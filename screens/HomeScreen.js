@@ -30,7 +30,7 @@ const HomeScreen = ({navigation}) => {
             <Button
                 title="Verificar"
                 onPress={() =>{
-                    console.log('verificar llave: d448f18a-acef-4b25-aa29-e91adea38b3e')
+                    // console.log('verificar llave: d448f18a-acef-4b25-aa29-e91adea38b3e')
                     navigation.navigate('Event', {llave : llave})
                 }}
                 color= 'rgb(255,204,0)'

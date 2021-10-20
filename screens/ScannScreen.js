@@ -1,85 +1,68 @@
-// import React,{useState, useEffect} from 'react';
-// import {View, StyleSheet, Text, Button} from 'react-native';
-// import { BarCodeScanner } from 'expo-barcode-scanner';
-
-// const ScannScreen = () => {
-
-//     const [hasPermission, setHasPermission] = useState(null);
-//     const [scanned, setScanned] = useState(false);
-//     const [text, setText] = useState('Not yet scanned')
-
-//     const askForCameraPermission = () => {
-//         (async () => {
-//             const { status } = await BarCodeScanner.requestPermissionsAsync();
-//             setHasPermission(status === 'granted');
-//           })();
-//       }
-
-
-//     useEffect(() => {
-//         askForCameraPermission();
-//         console.log(hasPermission)
-//     }, []);
-
-//     const handleBarCodeScanned = ({type, data}) => {
-//         setScanned(true)
-//         setText(data);
-//         console.log('Type: ' + type + '\nData: ' + data)
-//     }
-
-//     // Check permissions and return the screens
-//   if (hasPermission === null) {
-//     return (
-//       <View style={styles.container}>
-//         <Text>Requesting for camera permission</Text>
-//       </View>)
-//   }
-//   if (hasPermission === false) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={{ margin: 10 }}>No access to camera</Text>
-//         <Button title={'Allow Camera'} onPress={() => askForCameraPermission()} />
-//       </View>)
-//   }
-
-
-//     return (
-//         <View style={styles.container}>
-//         <Text>scanner</Text>
-//       </View>)
-    
-// }
-
-// const styles = StyleSheet.create({})
-
-// export default ScannScreen;
-
-
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, Button, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import {searchTicketiInEvent} from "../api"
+import AwesomeAlert from 'react-native-awesome-alerts';
+export default function App({route}) {
 
-export default function App() {
+    const { eventID } = route.params;
+    // console.log(eventID)
+
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [eventId, setEventId] = useState(eventID);
+  const [userData, setUserData] = useState([]);
+  
+//   const [idTicket, setIdTicket] = useState('81ec400e-d6c0-47bc-9a40-0006e4a0f877');
 
   useEffect(() => {
+      
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
 
-  const handleBarCodeScanned = ({ type, data }) => {
+  
+
+  const handleBarCodeScanned = async ({ data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    let resp = await searchTicketiInEvent(eventId, data)
+    setUserData(resp)
+    if(resp){
+        Alert.alert(
+            "TICKET VALIDO",
+            'Prop: '+resp.propietario +'\nUsuario: ' + resp.user.email  +'\nEvento: ' + resp.event.artist  +'\nFecha: ' + resp.event.date +'\nLugar: ' + resp.event.place,  
+           
+            [
+              //sumar a la variable q cuenta los ingresados al evento
+              { text: "OK", onPress: () => console.log('') }
+            ]
+          );
+        
+        
+    }
+    else{
+        Alert.alert(
+            "TICKET NO VALIDO",
+            'vuelvas pronto'
+           
+            [
+              
+              { text: "OK", onPress: () => setScanned(false) }
+            ]
+          );
+        
+    }
+    
+    
   };
 
   if (hasPermission === null) {
     return <Text>Requesting for camera permission</Text>;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>No tienes acceso a la camara</Text>;
   }
 
   return (
@@ -88,7 +71,9 @@ export default function App() {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+      {scanned && <Button title={'Toca para volver a escanear'} onPress={() => setScanned(false)} />}
+      
+      
     </View>
   );
 }
