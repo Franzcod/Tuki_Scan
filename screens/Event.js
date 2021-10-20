@@ -4,22 +4,26 @@ import {View, StyleSheet,Image,Text , Button } from 'react-native';
 import {getEvent} from "../api"
 
 const Event = ( { route, navigation }) => {
+    
 
     const { llave } = route.params;
+
+    console.log('llave => ',llave)
 
     const [event, setEvent] = useState([])
 
 
     const loadEvent = async (id) => {
+        console.log('id in fuction => ', id)
         const data = await getEvent(id)
-        // console.log(data)
+        console.log(data)
         setEvent(data)
         // console.log(data.error)
     }
 
     useEffect(() => {
         loadEvent(llave);
-    }, [event])
+    }, [])
 
     return (
         
@@ -39,9 +43,9 @@ const Event = ( { route, navigation }) => {
                 <Text style={styles.texto}>{event.artist}</Text>
                 <Text style={styles.texto_2}>{event.place}</Text>
                 <Text style={styles.texto_2}>{event.date} // {event.time}hs</Text>
-                <Text style={styles.texto_2}>Total: <Text style={styles.span}>{event.availableTickets}</Text></Text>
-                <Text style={styles.texto_2}>Vendidos: <Text style={styles.span}>0000</Text>(00%)</Text>
-                <Text style={styles.texto_2}>Ingresados: <Text style={styles.span}>0000</Text>(00%)</Text>
+                <Text style={styles.texto_2}>Total: <Text style={styles.span}>{event.totalTickets}</Text></Text>
+                <Text style={styles.texto_2}>Vendidos: <Text style={styles.span}>{event.totalTickets - event.availableTickets}</Text> ({(((event.totalTickets - event.availableTickets)/event.totalTickets)*100).toFixed(2)}%)</Text>
+                <Text style={styles.texto_2}>Ingresados: <Text style={styles.span}>0000</Text> (00%)</Text>
                 <View
                     style={styles.contBtn}
                 >
