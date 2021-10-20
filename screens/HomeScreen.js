@@ -30,8 +30,8 @@ const HomeScreen = ({navigation}) => {
             <Button
                 title="Verificar"
                 onPress={() =>{
-                    console.log('verificar llave')
-                    navigation.navigate('Event', {llave : 'd448f18a-acef-4b25-aa29-e91adea38b3e'})
+                    console.log('verificar llave: d448f18a-acef-4b25-aa29-e91adea38b3e')
+                    navigation.navigate('Event', {llave : llave})
                 }}
                 color= 'rgb(255,204,0)'
                 style={styles.boton}
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     tinyLogo: {
       width: 350,
       height: 150,
-      marginTop: 100
+      marginTop: 0
     }
   
     ,input: {
